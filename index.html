@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O's Team Generator</title>
+  </head>
+  
+  <style>
+    html {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+
+    #navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      background-color: #4f8073;
+    }
+
+    #navbarTitle {
+      color: white;
+    }
+
+    #maincontent {
+      position: fixed;
+      top: 40px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    #settingsColumn {
+      width: 20%;
+      height: 100%;
+      background-color: #4f8073;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #namesInput {
+      margin: 10px;
+      height: 200px;
+      outline: none;
+      border-radius: 10px;
+      padding: 5px;
+      resize: vertical;
+
+      transition: all 0.2s;
+    }
+
+    #namesInput:focus {
+      background-color: rgb(199, 199, 199);
+    }
+
+    .ctrlLabel {
+      color: white;
+      margin: 3px;
+    }
+
+    #genBtn {
+      background-color: #007e60;
+      color: white;
+      border-radius: 5px;
+      border: 1px solid black;
+      transition: 0.2s;
+      height: 100%;
+    }
+
+    #genBtn:hover {
+      background-color: #008a6a;
+    }
+
+    #genBtn:active {
+      transition: all 0s;
+      background-color: #006950;
+    }
+
+    #teamsDisplayColumn {
+      width: 80%;
+      height: 100%;
+
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+
+    .groupDisplay {
+      width: 300px;
+      height: fit-content;
+
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+    }
+
+    .groupDisplayText {
+      width: 100%;
+      padding: 5px;
+      text-align: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .header {
+      background-color: #388a94;
+    }
+  </style>
+
+  <body>
+    <div id="navbar">
+      <h2 id="navbarTitle">O's Team Generator</h2>
+    </div>
+
+    <div id="maincontent">
+      <div id="teamsDisplayColumn">
+        <!--<div class="groupDisplay">
+          <div class="groupDisplayText header">Group 1</div>
+          <div class="groupDisplayText" style="background-color: rgb(68, 74, 73);">Person</div>
+          <div class="groupDisplayText" style="background-color: rgb(106, 121, 119);">Person</div>
+          <div class="groupDisplayText" style="background-color: rgb(68, 74, 73);">Person</div>
+          <div class="groupDisplayText" style="background-color: rgb(106, 121, 119);">Person</div>
+          <div class="groupDisplayText" style="background-color: rgb(68, 74, 73);">Person</div>
+        </div>-->
+      </div>
+
+      <div id="settingsColumn">
+        <textarea id="namesInput"></textarea>
+        <br>
+        <div style="display: flex; align-items: center; padding-left: 5px; padding-right: 5px;">
+          <div style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+            <p class="ctrlLabel" style="width: 100%;">Groups</p>
+            <input id="groupCount" value="5" type="number" style="width: 90%;">
+          </div>
+
+          <div style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+            <button id="genBtn" onclick="generateTeams()">Generate! :)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function generateTeams() {
+        document.getElementById("teamsDisplayColumn").innerHTML = "";
+
+        const namesInput = document.getElementById("namesInput").value.split("\n");
+        const groupCount = document.getElementById("groupCount").value;
+
+        let remainingNames = [];
+        let teams = {};
+
+        let groups = Array.from({ length: groupCount }, () => []);
+        namesInput.forEach((item, i) => groups[i % groupCount].push(item));
+
+        groups = shuffleArray(groups);
+
+        let g = 0;
+        for (group of groups) {
+          g++;
+
+          let newGroupDisplay = document.createElement("div");
+          newGroupDisplay.className = "groupDisplay";
+          
+          let groupDisplayHeader = document.createElement("div");
+          groupDisplayHeader.className = "groupDisplayText header";
+          groupDisplayHeader.textContent = `Group ${g}`;
+          newGroupDisplay.appendChild(groupDisplayHeader);
+
+          let lightgray = false;
+          for (name of group) {
+            let newNameDisplay = document.createElement("div");
+            newNameDisplay.className = "groupDisplayText";
+            newNameDisplay.textContent = name;
+
+            if (lightgray === false) {
+              newNameDisplay.style.backgroundColor = "rgb(68, 74, 73)";
+              lightgray = true;
+            } else {
+              newNameDisplay.style.backgroundColor = "rgb(106, 121, 119)";
+              lightgray = false;
+            }
+
+            newGroupDisplay.appendChild(newNameDisplay);
+          }
+
+          document.getElementById("teamsDisplayColumn").appendChild(newGroupDisplay);
+        }
+      }
+    </script>
+  </body>
+</html>
