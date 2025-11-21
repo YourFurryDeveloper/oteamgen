@@ -117,6 +117,19 @@
     .header {
       background-color: #388a94;
     }
+
+    #changelogContainer {
+      margin-top: 15px;
+      padding: 5px;
+    }
+
+    #changelogContainerHeader {
+      color: white;
+    }
+
+    .changelogEntry {
+      color: white;
+    }
   </style>
 
   <body>
@@ -149,11 +162,16 @@
             <button id="genBtn" onclick="generateTeams()">Generate! :)</button>
           </div>
         </div>
+
+        <div id="changelogContainer">
+          <h3 id="changelogContainerHeader">Changelog</h3>
+          <p class="changelogEntry">V1.0.1: Fixed randomization math</p>
+        </div>
       </div>
     </div>
 
     <script>
-      function shuffleArray(array) {
+      function shuffleArray2(array) {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [array[i], array[j]] = [array[j], array[i]];
@@ -161,19 +179,37 @@
         return array;
       }
 
+      function shuffleArray(array) {
+        var m = array.length, t, i;
+
+        // While there remain elements to shuffle…
+        while (m) {
+
+          // Pick a remaining element…
+          i = Math.floor(Math.random() * m--);
+
+          // And swap it with the current element.
+          t = array[m];
+          array[m] = array[i];
+          array[i] = t;
+        }
+
+        return array;
+      }
+
       function generateTeams() {
         document.getElementById("teamsDisplayColumn").innerHTML = "";
 
-        const namesInput = document.getElementById("namesInput").value.split("\n");
+        let namesInput = document.getElementById("namesInput").value.split("\n");
         const groupCount = document.getElementById("groupCount").value;
+
+        namesInput = shuffleArray(namesInput);
 
         let remainingNames = [];
         let teams = {};
 
         let groups = Array.from({ length: groupCount }, () => []);
         namesInput.forEach((item, i) => groups[i % groupCount].push(item));
-
-        groups = shuffleArray(groups);
 
         let g = 0;
         for (group of groups) {
