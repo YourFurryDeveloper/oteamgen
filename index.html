@@ -97,6 +97,10 @@
       justify-content: space-evenly;
     }
 
+    .teamDisplaySuspense {
+      transition: opacity 3s;
+    }
+
     .groupDisplay {
       width: 300px;
       height: fit-content;
@@ -133,6 +137,8 @@
   </style>
 
   <body>
+    <audio id="drumrollAudio" src="drumroll.mp3"></audio>
+
     <div id="navbar">
       <h2 id="navbarTitle">OTeamGen</h2>
     </div>
@@ -164,8 +170,8 @@
         </div>
 
         <!--<div style="display: flex; align-items: center; padding-left: 5px; padding-right: 5px;">
-          <div style="display: flex; flex-direction: row; width: 100%; height: 100%;">
-            <input id="groupCount" value="5" type="checkbox" style="width: 90%;">
+          <div style="display: flex; flex-direction: row; width: 100%; justify-content: flex-start; height: 100%;">
+            <input id="suspenseModeToggle" type="checkbox">
             <p class="ctrlLabel" style="width: 100%;">Suspense Mode</p>
           </div>
         </div>-->
@@ -214,6 +220,8 @@
 
         let namesInput = document.getElementById("namesInput").value.split("\n");
         const groupCount = document.getElementById("groupCount").value;
+        //const suspenseMode = document.getElementById("suspenseModeToggle").checked;
+        const suspenseMode = false;
 
         namesInput = shuffleArray(namesInput);
 
@@ -221,7 +229,7 @@
         let teams = {};
 
         let groups = Array.from({ length: groupCount }, () => []);
-        namesInput.forEach((item, i) => groups[i % groupCount].push(item));
+        namesInput.forEach((item, i) => {if(item.trim().length !== 0) { groups[i % groupCount].push(item) }});
 
         let g = 0;
         for (group of groups) {
@@ -252,7 +260,22 @@
             newGroupDisplay.appendChild(newNameDisplay);
           }
 
-          document.getElementById("teamsDisplayColumn").appendChild(newGroupDisplay);
+          if (suspenseMode) {
+            if (document.getElementById("teamsDisplayColumn").className === "teamDisplaySuspense") {document.getElementById("teamsDisplayColumn").classList.remove("teamDisplaySuspense")}
+            document.getElementById("drumrollAudio").play();
+            document.getElementById("teamsDisplayColumn").style.opacity = "0";
+            document.getElementById("teamsDisplayColumn").appendChild(newGroupDisplay);
+            document.getElementById("teamsDisplayColumn").className = "teamDisplaySuspense";
+            document.getElementById("teamsDisplayColumn").style.opacity = "1";
+            setTimeout(function() {
+              document.getElementById("teamsDisplayColumn").classList.remove("teamDisplaySuspense");
+              document.getElementById("drumrollAudio").pause();
+              document.getElementById("drumrollAudio").currentTime = 0;
+            }, 3000);
+          } else {
+            if (document.getElementById("teamsDisplayColumn").className === "teamDisplaySuspense") {document.getElementById("teamsDisplayColumn").classList.remove("teamDisplaySuspense")}
+            document.getElementById("teamsDisplayColumn").appendChild(newGroupDisplay);
+          }
         }
       }
     </script>
